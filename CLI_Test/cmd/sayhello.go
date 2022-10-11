@@ -21,16 +21,24 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
+		greeting := "Hello"
 		name, _ := cmd.Flags().GetString("name")
 		if name == "" {
-			name = "world"
+			name = "World"
 		}
-		fmt.Println("Hello " + name + "!")
+		if viper.GetString("name") != "" {
+			name = viper.GetString("name")
+		}
+		if viper.GetString("greeting") != "" {
+			greeting = viper.GetString("greeting")
+		}
+		fmt.Println(greeting + " " + name)
 	},
 }
 
 func init() {
 	sayCmd.AddCommand(sayhelloCmd)
+	viper.AutomaticEnv()
 	sayhelloCmd.Flags().StringP("name", "n", viper.GetString("ENVNAME"), "Set your Name")
 
 	// Here you will define your flags and configuration settings.
