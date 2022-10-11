@@ -5,13 +5,13 @@ package cmd
 
 import (
 	"fmt"
+	"github.com/mitchellh/go-homedir"
 	"github.com/spf13/viper"
 	"os"
 
 	"github.com/spf13/cobra"
 )
 
-var homedir string = "home/brian/IdeaProjects/Go_Day1/CLI_Test"
 var cfgFile string
 
 // rootCmd represents the base command when called without any subcommands
@@ -39,6 +39,7 @@ func Execute() {
 }
 
 func init() {
+	cobra.OnInitialize(initConfig)
 	// Here you will define your flags and configuration settings.
 	// Cobra supports persistent flags, which, if defined here,
 	// will be global for your application.
@@ -57,8 +58,11 @@ func initConfig() {
 		viper.SetConfigFile(cfgFile)
 	} else {
 		// Find home directory.
-		home := homedir
-
+		home, err := homedir.Dir()
+		if err != nil {
+			fmt.Println(err)
+			os.Exit(1)
+		}
 		// Search config in home directory with name ".hello-cobra" (without extension).
 		viper.AddConfigPath(home)
 		viper.SetConfigName(".hello-cobra")
